@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Whack A Mole!</title>
+  <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Whack-a-mole! <span class="score">0</span></h1>
+
+  <audio id="audiogame" src="kick.wav"></audio>
+
+  <button onClick="startGame()">Start!</button>
+
+  <div class="game">
+    <div class="hole hole1">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole2">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole3">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole4">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole5">
+      <div class="mole"></div>
+    </div>
+    <div class="hole hole6">
+      <div class="mole"></div>
+    </div>
+  </div>
+
+  <script>
+    const holes = document.querySelectorAll('.hole');
+    const scoreBoard = document.querySelector('.score');
+    const moles = document.querySelectorAll('.mole');
+    const audio = document.querySelector('#audiogame');
+    let lastHole = null;
+    let isGameOver;
+    let score;
+
+
+    function log(argument) {
+      console.log(argument);
+    }
+
+    function dir(argument) {
+      console.dir(argument);
+    }
+
+
+ 
+    function startGame() {
+      isGameOver = false;
+      scoreBoard.innerText = '0';
+      score = 0;
+
+      randomHole();
+
+      setTimeout(()=>{
+        isGameOver = true;
+      }, 20000); // 20 giây thì end game
+
+    }
+
+    function randInt(a, b) {
+      return parseInt(Number(Math.random() * (b-a) + a).toFixed(0)); 
+    }
+
+    function handleClickHole(e) {
+      //log(this);
+
+      audio.currentTime = 0;
+      audio.play();
+
+      if (this.classList.contains('up')) {
+        score++;
+        scoreBoard.innerText = score;
+        this.classList.remove('up');
+      }
+    }
+
+    function randomHole() {
+      const holeRandom = holes[randInt(0, holes.length - 1)];
+      
+      if (holeRandom == lastHole) {
+        return randomHole();
+      } else {
+        lastHole = holeRandom;
+      }
+
+      const timeDisplay = randInt(500,2500);
+      holeRandom.classList.add('up');
+      setTimeout(()=>{
+        holeRandom.classList.remove('up');
+        if (!isGameOver)
+          randomHole(); 
+      }, timeDisplay);
+    }
+ 
+
+    holes.forEach(hole => hole.addEventListener('click', handleClickHole));
+
+  </script>
+</body>
+</html>
